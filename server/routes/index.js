@@ -1,13 +1,45 @@
 import Users from '../controllers/user';
 import Tasks from '../controllers/task';
-
+import passport from '../passport';
+import { validateRegisterForm } from '../validator';
 var express = require('express');
 var router = express.Router();
   
 export default (app) => {
 app.get('/api', (req, res) => res.status(200).send({
         message: 'Welcome to the bookStore API!',}));
-app.post('/api/users', Users.signUp); // API route for user to signup
+
+app.post('/api/login', (req, res, next)=>{
+  passport.authenticate('local', function(err, user, info) {
+    if (!user) { return res.status(401).json({
+      message: "not found"
+    }) }
+
+      req.logIn(user, function(err) {
+        if (err) { return next(err); }
+        console.log(res.headers)
+        return res.status(200).json({
+          user
+        })
+        });
+  })(req, res, next);
+})
+app.post('/api/users', async (req, res, next)=>{
+  const validationResult = validateRegisterForm(req.body)
+  if (Object.keys(validationResult).length) return res.status(500).json(validationResult)
+  const user = await Users.signUp(req)
+  if (!user) { return res.status(401).json({
+    message: "bad request"
+  }) }
+ 
+    req.logIn(user, function(err) {
+      if (err) { return next(err); }
+      return res.status(200).json({
+      user
+    })
+    });
+}); // API route for user to signup
+
 app.post('/api/users/:userId/tasks', Tasks.create); // API route for user to create a task
 
 app.get('/api/tasks', Tasks.list); // API route for user to get all tasks in the database

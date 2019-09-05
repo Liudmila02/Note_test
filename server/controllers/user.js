@@ -3,23 +3,30 @@ import model from '../models';
         const { User } = model;
 
         class Users {
-          static signUp(req, res) {
-            const { first_name, last_name, username, email, password } = req.body
-            console.log(req.body)
-              return User
-                .create({
-                  first_name,
-                  last_name,
-                  username,
-                  email,
+          static async login(email, password) { 
+            return await User.findOne({
+              where: {
+                  email, 
                   password
-                })
-                .then(userData => res.status(201).send({
-                  success: true,
-                  message: 'User successfully created',
-                  userData
-                }))
+              }
+            })
+          }
+          static async signUp(req) {
+            const { first_name, last_name, username, email, password } = req.body
+            try{
+              const user = await User
+              .create({
+                first_name,
+                last_name,
+                username,
+                email,
+                password
+              }) 
+              return user
+            }catch(err){
+              return null
             }
+          }
         }
 
         export default Users;
