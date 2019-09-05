@@ -4,10 +4,12 @@ import model from '../models';
 
         class Users {
           static signUp(req, res) {
-            const { name, username, email, password } = req.body
+            const { first_name, last_name, username, email, password } = req.body
+            console.log(req.body)
               return User
                 .create({
-                  name,
+                  first_name,
+                  last_name,
                   username,
                   email,
                   password

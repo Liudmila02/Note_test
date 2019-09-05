@@ -1,46 +1,54 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
-  var Book = sequelize.define('Book', {
+  var Task = sequelize.define('Task', {
     title: DataTypes.STRING,
-    author: DataTypes.STRING,
     description: DataTypes.STRING,
-    quantity: DataTypes.INTEGER,
-    userId: DataTypes.INTEGER
+    priority: DataTypes.INTEGER,
+    due_date: DataTypes.DATE,
+    completed: DataTypes.BOOLEAN,
+    userId: DataTypes.INTEGER,
   }, {});
-  Book.associate = function(models) {
+  Task.associate = function(models) {
     // associations can be defined here
   };
-  return Book;
+  return Task;
 };
 export default (sequelize, DataTypes) => {
-  const Book = sequelize.define('Book', {
+  const Task = sequelize.define('Task', {
     title: {
       type: DataTypes.STRING,
       allowNull: {
         args: false,
-        msg: 'Please enter the title for your book'
-      }
-    },
-    author: {
-      type: DataTypes.STRING,
-      allowNull: {
-        args: false,
-        msg: 'Please enter an author'
+        msg: 'Please enter the title for your task'
       }
     },
     description: {
       type: DataTypes.STRING,
       allowNull: {
         args: false,
-        msg: 'Pease input a description'
+        msg: 'Please input a description'
       }
     },
-    quantity: {
+    priority: {
       type: DataTypes.INTEGER,
       allowNull: {
         args: false,
-        msg: 'Pease input a quantity'
+        msg: 'Please input a priority'
       }
+    },
+    due_date: {
+      type: DataTypes.DATE,
+      allowNull: {
+        args: false,
+        msg: 'Please input a priority'
+      }
+    }, 
+    completed: {
+      type: DataTypes.BOOLEAN,
+      allowNull: {
+        args: false,
+        msg: 'Please input a completed'
+    }
     },
     userId: {
       type: DataTypes.INTEGER,
@@ -51,12 +59,12 @@ export default (sequelize, DataTypes) => {
       }
     }
   }, {});
-  Book.associate = (models) => {
+  Task.associate = (models) => {
     // associations can be defined here
-    Book.belongsTo(models.User, {
+    Task.belongsTo(models.User, {
       foreignKey: 'userId',
       onDelete: 'CASCADE'
     });
   };
-  return User;
+  return Task;
 };

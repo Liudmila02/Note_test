@@ -16,12 +16,22 @@
   "dependencies": {
     "babel-cli": "^6.26.0",
     "babel-core": "^6.26.3",
+    "bcryptjs": "*",
     "body-parser": "^1.19.0",
+    "cancan": "^3.1.0",
+    "cookie-parser": "~1.4.3",
     "express": "^4.17.1",
+    "express-session": "^1.16.2",
+    "mongoose": "~4.13.1",
     "morgan": "^1.9.1",
+    "nodemon": "^1.19.2",
+    "passport": "~0.3.2",
+    "passport-local": "~1.0.0",
     "pg": "^7.12.1",
     "pg-hstore": "^2.3.3",
     "sequelize": "^5.18.0",
-    "sequelize-cli": "^5.5.1"
+    "sequelize-cli": "^5.5.1",
+    "serve-favicon": "^2.5.0",
+    "static-favicon": "~1.0.0"
   }
 }
