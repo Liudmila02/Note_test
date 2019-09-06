@@ -3,10 +3,21 @@
 export const validateRegisterForm = args => {
     var errors = {}
     if (!args.email) errors.email =  "missing email";
-    if (!args.password) errors.password =  "this field cannot be blank";
-    if (!args.first_name) errors.first_name =  "this field cannot be blank";
-    if (!args.last_name) errors.last_name =  "this field cannot be blank";
-    if (!args.user_name) errors.user_name =  "this field cannot be blank";
+    if (!args.password) errors.password =  "this field cann't be blank";
+    if (!args.first_name) errors.first_name =  "this field cann't be blank";
+    if (!args.last_name) errors.last_name =  "this field cann't be blank";
+    if (!args.user_name) errors.user_name =  "this field cann't be blank";
 
    return errors
+}
+
+export const validateTasksForm = args => {
+  var errors = {}
+  if (!args.title) errors.title =  "this field cann't be blank";
+  if (!args.description) errors.description =  "this field cann't be blank";
+  if (!args.priority) errors.priority =  "choose a priority";
+  if (!args.due_date) errors.due_date =  "choose a due date";
+  
+
+ return errors
 }

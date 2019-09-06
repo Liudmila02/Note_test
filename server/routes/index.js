@@ -2,6 +2,8 @@ import Users from '../controllers/user';
 import Tasks from '../controllers/task';
 import passport from '../passport';
 import { validateRegisterForm } from '../validator';
+import { validateTasksForm } from '../validator';
+
 var express = require('express');
 var router = express.Router();
   
@@ -40,10 +42,18 @@ app.post('/api/users', async (req, res, next)=>{
     });
 }); // API route for user to signup
 
+app.post('/api/tasks', async (req, res, next)=>{
+  const validationTasks = validateTasksForm(req.body)
+  if (Object.keys(validationTasks).length) return res.status(500).json(validationTasks)
+  const task = await Tasks.create(req)
+  if (!task) { return res.status(401).json({
+    message: "bad request"
+  }) }
+});
+
 app.post('/api/users/:userId/tasks', Tasks.create); // API route for user to create a task
 
 app.get('/api/tasks', Tasks.list); // API route for user to get all tasks in the database
-
 app.put('/api/tasks/:taskId', Tasks.modify); // API route for user to edit a task
 app.delete('/api/tasks/:taskId', Tasks.delete); // API route for user to delete a boo
 

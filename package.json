@@ -4,14 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --exec babel-node app.js"
+    "start": "nodemon --exec babel-node app.js",
+    "test": "jest --runInBand"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "babel-preset-env": "^1.7.0",
-    "nodemon": "^1.19.1"
+    "jest": "^24.9.0",
+    "mocha": "^6.2.0",
+    "nodemon": "^1.19.1",
+    "should": "^13.2.3",
+    "supertest": "^4.0.2"
   },
   "dependencies": {
     "babel-cli": "^6.26.0",
@@ -19,7 +24,7 @@
     "bcryptjs": "*",
     "body-parser": "^1.19.0",
     "cancan": "^3.1.0",
-    "cookie-parser": "~1.4.3",
+    "cookie-parser": "^1.4.4",
     "express": "^4.17.1",
     "express-session": "^1.16.2",
     "mongoose": "~4.13.1",
