@@ -6,7 +6,7 @@ export const validateRegisterForm = args => {
     if (!args.password) errors.password =  "this field cann't be blank";
     if (!args.first_name) errors.first_name =  "this field cann't be blank";
     if (!args.last_name) errors.last_name =  "this field cann't be blank";
-    if (!args.user_name) errors.user_name =  "this field cann't be blank";
+    if (!args.username) errors.username =  "this field cann't be blank";
 
    return errors
 }

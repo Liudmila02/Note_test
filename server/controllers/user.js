@@ -22,8 +22,9 @@ import model from '../models';
                 email,
                 password
               }) 
-              return user
+              return {email: user.email, username: user.username, first_name: user.first_name, last_name: user.last_name}
             }catch(err){
+              console.log(err)
               return null
             }
           }

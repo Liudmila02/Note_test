@@ -28,6 +28,7 @@ app.post('/api/login', (req, res, next)=>{
 })
 app.post('/api/users', async (req, res, next)=>{
   const validationResult = validateRegisterForm(req.body)
+  console.log(validationResult)
   if (Object.keys(validationResult).length) return res.status(500).json(validationResult)
   const user = await Users.signUp(req)
   if (!user) { return res.status(401).json({
@@ -45,13 +46,13 @@ app.post('/api/users', async (req, res, next)=>{
 app.post('/api/tasks', async (req, res, next)=>{
   const validationTasks = validateTasksForm(req.body)
   if (Object.keys(validationTasks).length) return res.status(500).json(validationTasks)
-  const task = await Tasks.create(req)
+  const task = await Tasks.create(req,res)
   if (!task) { return res.status(401).json({
     message: "bad request"
   }) }
 });
 
-app.post('/api/users/:userId/tasks', Tasks.create); // API route for user to create a task
+
 
 app.get('/api/tasks', Tasks.list); // API route for user to get all tasks in the database
 app.put('/api/tasks/:taskId', Tasks.modify); // API route for user to edit a task
