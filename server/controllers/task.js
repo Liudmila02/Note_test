@@ -4,7 +4,7 @@ const { Task } = model;
 
 class Tasks {
   static create(req, res) {
-    const { title, description, priority, due_date, completed, userId } = req.body
+    const { title, description, priority, due_date, completed } = req.body
     return Task
       .create({
         title,
@@ -12,7 +12,7 @@ class Tasks {
         priority,
         due_date,
         completed,
-        userId
+        userId: req.user.id
       })
       .then(task => res.status(200).send({
         message: `Your task with the title ${title} has been created successfully `,

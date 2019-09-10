@@ -4,10 +4,8 @@ const express = require('express');
 
 const app = require('../../app')
 import db from '../models/index';
-import {register} from '../local'
-// it('Test for the get api',(done) => {
-//   requestAnimationFrame(app).get('/api').expect('Welcome to the bookStore API!').end(done);
-// })
+import {register} from '../regist';
+import User from '../controllers/user'
 
 describe('not correct user',() => {
   it ('should not create user', async ()  => {
@@ -72,11 +70,21 @@ describe('correct task', () => {
   it('should create a new task', async () => {
     await db.Task.destroy({ where: {}, force: true });
     const user = await db.User.findOne({})
-
+    let cookie
+    await supertest(app)
+        .post('/api/login')
+        .set('content-type', 'application/json')
+        .send({
+          email: user.email,
+          password: user.password,
+        })
+        .then(async response => {
+          cookie = response.headers['set-cookie'].pop().split(';')[0];
+        });
     await supertest(app)
       .post('/api/tasks')
+      .set('Cookie', cookie)
       .send({
-        userId: user.id,
         title: 'task number one',
         description: 'short description',
         priority: 2,
@@ -89,86 +97,88 @@ describe('correct task', () => {
     })
 });
 
-// describe('/api/login', () => {
-//   beforeEach(async () => {
-//     await db.User.destroy({ where: {}, force: true });
-//     await db.Task.destroy({ where: {}, force: true });
-//   });
+describe('/api/login', () => {
+  beforeEach(async () => {
+    await db.User.destroy({ where: {}, force: true });
+    await db.Task.destroy({ where: {}, force: true });
+  });
+  const testUser = {
+    email: 'test@gmail.com',
+    password: 'password123',
+    first_name: 'Fname',
+    last_name: 'Lname',
+    username: 'name',
+  }
+  describe('Bad params', () => {
+    test("Should respond with error", async () => {
+      await register(testUser)
+      await supertest(app)
+        .post('/api/login')
+        .set('content-type', 'application/json')
+        .send({
+          email: testUser.email,
+          password: "wrongpassword",
+        })
+        .then(async response => {
+          expect(response.statusCode).toBe(401);
+          expect(response.body.message).toBe("not found");
+        });
+    })
+  })
 
-//   const testUser = {
-//     email: 'test@gmail.com',
-//     password: 'password123',
-//     first_name: 'Fname',
-//     last_name: 'Lname',
-//   }
+  describe('Good params', () => {
+    test("Should respond with profile", async () => {
+      let cookie
+      await User.signUp({body: testUser})
+      await supertest(app)
+        .post('/api/login')
+        .set('content-type', 'application/json')
+        .send({
+          email: testUser.email,
+          password: testUser.password,
+        })
+        .then(async response => {
+          expect(response.statusCode).toBe(200);
+          expect(response.body.user).toBeTruthy();
+          console.log(response.headers)
+          cookie = response.headers['set-cookie'].pop().split(';')[0];
+        });
 
-//   describe('Bad params', () => {
-//     test("Should respond with error", async () => {
-//       await register(testUser)
-//       await request(app)
-//         .post('/api/login')
-//         .set('content-type', 'application/json')
-//         .send({
-//           email: testUser.email,
-//           password: "wrongpassword",
-//         })
-//         .then(async response => {
-//           expect(response.statusCode).toBe(401);
-//           expect(response.body.message).toBe("Incorrect email or password");
-//         });
-//     })
-//   })
+      await supertest(app)
+        .get('/auth')
+        .set('Cookie', cookie)
+        .then(response => {
+          console.log(response.body)
+          expect(response.statusCode).toBe(200);
+          expect(response.body.id).toBeTruthy();
+        });
+    })
+  })
+})
 
-//   describe('Good params', () => {
-//     test("Should respond with profile", async () => {
-//       let cookie
-//       await register(testUser)
-//       await request(app)
-//         .post('/api/login')
-//         .set('content-type', 'application/json')
-//         .send({
-//           email: testUser.email,
-//           password: testUser.password,
-//         })
-//         .then(async response => {
-//           expect(response.statusCode).toBe(200);
-//           expect(response.body.id).toBeTruthy();
-//           cookie = response.headers['set-cookie'].pop().split(';')[0];
-//         });
+describe('LIST /api/tasks', () => {
+  it('should list a task', async () => {
+    await supertest(app)
+      .get("/api/tasks")
+      .expect(200)
+      .end(done);
+  })
+});
 
-//       await request(app)
-//         .get('/me')
-//         .set('Cookie', cookie)
-//         .then(response => {
-//           expect(response.statusCode).toBe(200);
-//           expect(response.body.id).toBeTruthy();
-//         });
-//     })
-//   })
-// })
+describe('MODIFY /api/tasks/:taskId', () => {
+  it('should modify a task', async () => {
+    await supertest(app)
+      .put("/api/tasks/:taskId")
+      .expect(200)
+      .end(done);
+  })
+});
 
-
-//describe('GET /api', () => {
-  //it('', (done) => {
-    
-//describe('POST /api/login', () => {
-  //it('create new user', (done) => {
-   
-      
-//describe('POST /users/:userId/tasks', () => {
-  //it('should create a task', (done) => {
-   
-//describe('GET /tasks', () => {
-  //it('should list a task', (done) => {
-      
-//describe('PUT /tasks/:id', () => {
-  //it('should modify a task', (done) => {
-
-// describe('DELETE /api/tasks/:taskId', () => {
-//   it('should delete a task', async () => {
-//     await supertest(app)
-//       .delete("/api/tasks/:taskId")
-//       .expect(200)
-//       .end(done);
-//   })
-// });
+describe('DELETE /api/tasks/:taskId', () => {
+  it('should delete a task', async () => {
+    await supertest(app)
+      .delete("/api/tasks/:taskId")
+      .expect(200)
+      .end(done);
+  })
+});

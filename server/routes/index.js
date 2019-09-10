@@ -3,6 +3,7 @@ import Tasks from '../controllers/task';
 import passport from '../passport';
 import { validateRegisterForm } from '../validator';
 import { validateTasksForm } from '../validator';
+import { tsConstructSignatureDeclaration } from '@babel/types';
 
 var express = require('express');
 var router = express.Router();
@@ -16,9 +17,10 @@ app.post('/api/login', (req, res, next)=>{
     if (!user) { return res.status(401).json({
       message: "not found"
     }) }
-
       req.logIn(user, function(err) {
-        if (err) { return next(err); }
+        if (err) { 
+          console.log(err)
+          return next(err); }
         console.log(res.headers)
         return res.status(200).json({
           user
@@ -26,6 +28,7 @@ app.post('/api/login', (req, res, next)=>{
         });
   })(req, res, next);
 })
+
 app.post('/api/users', async (req, res, next)=>{
   const validationResult = validateRegisterForm(req.body)
   console.log(validationResult)
@@ -56,7 +59,11 @@ app.post('/api/tasks', async (req, res, next)=>{
 
 app.get('/api/tasks', Tasks.list); // API route for user to get all tasks in the database
 app.put('/api/tasks/:taskId', Tasks.modify); // API route for user to edit a task
-app.delete('/api/tasks/:taskId', Tasks.delete); // API route for user to delete a boo
+app.delete('/api/tasks/:taskId', Tasks.delete); // API route for user to delete a book
 
-
+app.get('/auth', (req, res) => {
+  if (!req.isAuthenticated())
+  return res.status(401).json({message: "not authenticated"})
+  else return res.status(200).json(req.user)
+})
 }
