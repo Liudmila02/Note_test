@@ -21,7 +21,7 @@ app.post('/api/login', (req, res, next)=>{
         if (err) { 
           console.log(err)
           return next(err); }
-        console.log(res.headers)
+          console.log(res.headers)
         return res.status(200).json({
           user
         })
@@ -67,3 +67,4 @@ app.get('/auth', (req, res) => {
   else return res.status(200).json(req.user)
 })
 }
+

@@ -156,29 +156,25 @@ describe('/api/login', () => {
   })
 })
 
-describe('LIST /api/tasks', () => {
-  it('should list a task', async () => {
-    await supertest(app)
-      .get("/api/tasks")
-      .expect(200)
-      .end(done);
+  describe('List tasks', () => {
+   test('should list all tasks', async () => {
+    await supertest(app).get('/api/tasks')
+    .expect(200).get, 'tasks list'
+     });
+   })
+  
+  describe('Modify a task', () => {
+    test('should modify a task', async () => {
+      await supertest(app).put('/api/tasks/:taskId')
+      .expect(200).put, 'task modified'
+      });
+    })
+  
+  describe('Delete a task', () => {
+    test('should delete a task', async () => {
+      await supertest(app).delete('/api/tasks/:taskId')
+        .expect(200).delete, 'task deleted'
+    });
   })
-});
-
-describe('MODIFY /api/tasks/:taskId', () => {
-  it('should modify a task', async () => {
-    await supertest(app)
-      .put("/api/tasks/:taskId")
-      .expect(200)
-      .end(done);
-  })
-});
-
-describe('DELETE /api/tasks/:taskId', () => {
-  it('should delete a task', async () => {
-    await supertest(app)
-      .delete("/api/tasks/:taskId")
-      .expect(200)
-      .end(done);
-  })
-});
+  
+ 
