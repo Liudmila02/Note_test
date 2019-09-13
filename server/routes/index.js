@@ -43,8 +43,8 @@ router.get('/confirm_email', async (req, res, next) => {
 
 app.post('/api/users', async (req, res, next)=>{
   const validationResult = validateRegisterForm(req.body)
- console.log(validationResult)
-  if (Object.keys(validationResult).length) return res.status(500).json(validationResult)
+  //console.log(validationResult)
+  if (Object.keys(validationResult).length) return res.status(500)//.json(validationResult)
   const user = await Users.signUp(req)
   if (!user) { return res.status(401).json({
     message: "bad request"
