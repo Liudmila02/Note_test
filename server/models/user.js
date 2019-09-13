@@ -5,7 +5,8 @@ module.exports = (sequelize, DataTypes) => {
     first_name: DataTypes.STRING,
     username: DataTypes.STRING,
     email: DataTypes.STRING,
-    password: DataTypes.STRING
+    password: DataTypes.STRING,
+    confirmed: DataTypes.BOOLEAN,
   }, {});
   User.associate = function(models) {
     // associations can be defined here
@@ -59,6 +60,11 @@ export default (sequelize, DataTypes) => {
           msg: 'Please enter a valid email address'
         },
       },
+    },
+    confirmed: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false,
     },
     password: {
       type: DataTypes.STRING,

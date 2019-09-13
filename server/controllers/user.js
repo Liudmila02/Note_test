@@ -1,5 +1,5 @@
 import model from '../models';
-
+import {sendEmail} from "../redis"
         const { User } = model;
 
         class Users {
@@ -20,9 +20,11 @@ import model from '../models';
                 last_name,
                 username,
                 email,
-                password
+                password,
               }) 
-              return {email: user.email, username: user.username, first_name: user.first_name, last_name: user.last_name}
+              sendEmail({email: email
+              })
+              return {email: user.email, confirmed: user.confirmed, username: user.username, first_name: user.first_name, last_name: user.last_name}
             }catch(err){
               return null
             }

@@ -3,8 +3,9 @@ import express from 'express'
 import logger from 'morgan';
 import bodyParser from 'body-parser';
 import routes from './server/routes';
-
+import redis from "redis";
 import passport from './server/passport';
+import connectRedis from 'connect-redis';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 
@@ -25,12 +26,25 @@ app.use(
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(session({
-  secret: 'keyboard cat',
-  resave: false,
-  saveUninitialized: true,
-  cookie: { secure: "auto" }
-}))
+
+const sessionMaxAge = 60000 * 60 * 24 * 7;
+
+const sessionConfig = {
+    store: new (connectRedis(session))({ client: redis }),
+    name: 'sid',
+    resave: true,
+    saveUninitialized: true,
+    secret: "adasdaasdasd",
+    unset: 'destroy',
+    cookie: {
+      httpOnly: true,
+      secure: 'auto',
+      maxAge: sessionMaxAge,
+      domain: "/",
+    },
+  };
+app.use(session(sessionConfig));
+
 app.use(passport.initialize());
 app.use(passport.session());
 
@@ -46,4 +60,4 @@ app.get('*', (req, res) => res.status(200).send({
 
 
 export default app;
-module.exports = app;
+module.exports = app;3

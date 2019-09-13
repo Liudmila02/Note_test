@@ -5,7 +5,9 @@ const express = require('express');
 const app = require('../../app')
 import db from '../models/index';
 import {register} from '../regist';
-import User from '../controllers/user'
+import User from '../controllers/user';
+import redis from "redis";
+import client from "../redis";
 
 describe('not correct user',() => {
   it ('should not create user', async ()  => {
@@ -110,7 +112,7 @@ describe('/api/login', () => {
     username: 'name',
   }
   describe('Bad params', () => {
-    test("Should respond with error", async () => {
+    it("Should respond with error", async () => {
       await register(testUser)
       await supertest(app)
         .post('/api/login')
@@ -127,7 +129,7 @@ describe('/api/login', () => {
   })
 
   describe('Good params', () => {
-    test("Should respond with profile", async () => {
+    it("Should respond with profile", async () => {
       let cookie
       await User.signUp({body: testUser})
       await supertest(app)
@@ -156,22 +158,67 @@ describe('/api/login', () => {
   })
 })
 
+describe('app/confirm_email', () => {
+  beforeEach(async () => {
+    await db.Task.destroy({ where: {}, force: true });
+    await db.User.destroy({ where: {}, force: true });
+  });
+
+  const testUser = {
+    email: 'test@gmail.com',
+    password: 'password123',
+    firstName: 'Fname',
+    lastName: 'Lname',
+  }
+
+  let token = 'safasfasf'
+
+  describe('Bad params', () => {
+    it("Should respond with error", async () => {
+      await supertest(app)
+      .get('/confirm_email?token='+ token)
+      .set('content-type', 'application/json')
+      .then(async response => {
+        expect(response.statusCode).toBe(500);
+        expect(response.body.message).toBe("link is broken");
+      });
+    })
+  })
+
+  describe('Good params', () => {
+    it("Should respond with true", async () => {
+      await register(testUser)
+      const uuidv4 = require('uuid/v4');
+      token = uuidv4()+uuidv4();
+      client.set(token, testUser.email, redis.print);
+
+      await supertest(app)
+      .get('/confirm_email?token='+ token)
+      .set('content-type', 'application/json')
+      .then(async response => {
+        expect(response.statusCode).toBe(200);
+        expect(response.body.message).toBe("ok");
+      });
+    })
+  })
+})
+
   describe('List tasks', () => {
-   test('should list all tasks', async () => {
+   it('should list all tasks', async () => {
     await supertest(app).get('/api/tasks')
     .expect(200).get, 'tasks list'
      });
    })
   
   describe('Modify a task', () => {
-    test('should modify a task', async () => {
+    it('should modify a task', async () => {
       await supertest(app).put('/api/tasks/:taskId')
       .expect(200).put, 'task modified'
       });
     })
   
   describe('Delete a task', () => {
-    test('should delete a task', async () => {
+    it('should delete a task', async () => {
       await supertest(app).delete('/api/tasks/:taskId')
         .expect(200).delete, 'task deleted'
     });

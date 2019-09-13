@@ -4,4 +4,8 @@ module.exports = {
       "^.+\\.js?$": "babel-jest"
     },
     testRegex: 'test/.*\.test\.js$'
-   };
+};
+
+   
+  
+  

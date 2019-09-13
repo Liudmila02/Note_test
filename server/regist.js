@@ -38,12 +38,12 @@ export async function register(args) {
       password_hash: hashPassword(args.password),
       first_name: args.first_name,
       last_name: args.last_name,
-      username: args.username || args.first_name + "-AkA-" + args.last_name
+      username: args.username || args.first_name + args.last_name
     })
   } catch (err) {
     throw new Error("An error occured, try again later");
   }
-
+  
   return {
     id: user.id,
     first_name: user.first_name,
