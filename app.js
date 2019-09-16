@@ -60,4 +60,4 @@ app.get('*', (req, res) => res.status(200).send({
 
 
 export default app;
-module.exports = app;3
+module.exports = app;

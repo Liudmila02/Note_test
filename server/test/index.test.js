@@ -11,7 +11,7 @@ import client from "../redis";
 
 describe('not correct user',() => {
   it ('should not create user', async ()  => {
-   await supertest(app)
+    await supertest(app)
     .post('/api/users')    
     .send({
     email: null,
