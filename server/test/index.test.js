@@ -43,7 +43,7 @@ describe('correct user',() => {
     })
     .then(response => {
       expect(response.statusCode).toBe(200);
-      expect(JSON.stringify(response.body)).toBe(JSON.stringify({  user: { email: 'Lyuda1@gmail.com', username: 'name',  first_name: 'Lyuda', last_name: 'Medyuk'}}))
+      expect(JSON.stringify(response.body)).toBe(JSON.stringify({  user: { email: 'Lyuda1@gmail.com', confirmed: false, username: 'name',  first_name: 'Lyuda', last_name: 'Medyuk'}}))
     })
 })
 })

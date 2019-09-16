@@ -3,7 +3,7 @@ import express from 'express'
 import logger from 'morgan';
 import bodyParser from 'body-parser';
 import routes from './server/routes';
-import redis from "redis";
+import redis from "./server/redis";
 import passport from './server/passport';
 import connectRedis from 'connect-redis';
 import cookieParser from 'cookie-parser';
