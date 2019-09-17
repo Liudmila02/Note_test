@@ -167,8 +167,9 @@ describe('app/confirm_email', () => {
   const testUser = {
     email: 'test@gmail.com',
     password: 'password123',
-    firstName: 'Fname',
-    lastName: 'Lname',
+    first_name: 'Fname',
+    last_name: 'Lname',
+    username: 'name',
   }
 
   let token = 'safasfasf'
@@ -177,12 +178,8 @@ describe('app/confirm_email', () => {
     it("Should respond with error", async () => {
       await supertest(app)
       .get('/confirm_email?token='+ token)
-      .set('content-type', 'application/json')
-      .then(async response => {
-        expect(response.statusCode).toBe(500);
-        expect(response.body.message).toBe("link is broken");
-      });
-    })
+        .expect(500).text, "link is broken"
+    });
   })
 
   describe('Good params', () => {
@@ -194,10 +191,9 @@ describe('app/confirm_email', () => {
 
       await supertest(app)
       .get('/confirm_email?token='+ token)
-      .set('content-type', 'application/json')
       .then(async response => {
         expect(response.statusCode).toBe(200);
-        expect(response.body.message).toBe("ok");
+        expect(response.body.message).toBe("Welcome to the .");
       });
     })
   })

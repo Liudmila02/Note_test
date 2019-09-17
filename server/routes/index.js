@@ -35,7 +35,7 @@ app.post('/api/login', (req, res, next)=>{
 router.get('/confirm_email', async (req, res, next) => {
   const result = await confirmEmail(req)
   if (result)
-    res.status(200).json({message: "ok"});
+    res.status(200).json({message: "Welcome to the ."});
   else
     res.status(500).json({message: "link is broken"});
 })
@@ -43,8 +43,8 @@ router.get('/confirm_email', async (req, res, next) => {
 
 app.post('/api/users', async (req, res, next)=>{
   const validationResult = validateRegisterForm(req.body)
-  //console.log(validationResult)
-  if (Object.keys(validationResult).length) return res.status(500)//.json(validationResult)
+  console.log(validationResult)
+  if (Object.keys(validationResult).length) return res.status(500).json(validationResult)
   const user = await Users.signUp(req)
   if (!user) { return res.status(401).json({
     message: "bad request"
@@ -58,7 +58,7 @@ app.post('/api/users', async (req, res, next)=>{
 }); // API route for user to signup
 app.post('/api/tasks', async (req, res, next)=>{
   const validationTasks = validateTasksForm(req.body)
-  if (Object.keys(validationTasks).length) return res.status(500)//.json(validationTasks)
+  if (Object.keys(validationTasks).length) return res.status(500).json(validationTasks)
   const task = await Tasks.create(req,res)
   if (!task) { return res.status(401).json({
     message: "bad request"
