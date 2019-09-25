@@ -40,7 +40,7 @@ const sessionConfig = {
       httpOnly: true,
       secure: 'auto',
       maxAge: sessionMaxAge,
-      domain: "/",
+      domain: "localhost",
     },
   };
 app.use(session(sessionConfig));

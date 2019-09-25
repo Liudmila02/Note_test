@@ -26,9 +26,28 @@ import {sendEmail} from "../redis"
               })
               return {email: user.email, confirmed: user.confirmed, username: user.username, first_name: user.first_name, last_name: user.last_name}
             }catch(err){
+              console.log(err)
               return null
             }
           }
+        
+        static delete(req, res) {
+          return User
+            .findById(req.params.userId)
+            .then(user => {
+              if(!user) {
+                return res.status(400).send({
+                message: 'User Not Found',
+                });
+              }
+              return user
+                .destroy()
+                .then(() => res.status(200).send({
+                  message: 'Task successfully deleted'
+                }))
+                .catch(error => res.status(400).send(error));
+            })
+            .catch(error => res.status(400).send(error))
         }
-
+      }
         export default Users;

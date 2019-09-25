@@ -1,4 +1,5 @@
 import redis from 'redis';
+import db from './models/index'
 
 const client = redis.createClient({
   url: "//127.0.0.1:6379",

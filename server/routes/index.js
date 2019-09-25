@@ -33,8 +33,9 @@ app.post('/api/login', (req, res, next)=>{
   })(req, res, next);
 })
 
-router.get('/confirm_email', async (req, res, next) => {
+app.get('/confirm_email', async (req, res, next) => {
   const result = await confirmEmail(req)
+  console.log(result)
   if (result)
     res.status(200).json({message: "Welcome to the ."});
   else
@@ -43,7 +44,7 @@ router.get('/confirm_email', async (req, res, next) => {
 
 
 app.post('/api/users', async (req, res, next)=>{
-  const validationResult = validateRegisterForm(req.body)
+   const validationResult = validateRegisterForm(req.body)
   console.log(validationResult)
   if (Object.keys(validationResult).length) return res.status(500).json(validationResult)
   const user = await Users.signUp(req)
@@ -54,7 +55,7 @@ app.post('/api/users', async (req, res, next)=>{
       if (err) { return next(err); }
       return res.status(200).json({
       user
-    })
+      })
     });
 }); // API route for user to signup
 app.post('/api/tasks', async (req, res, next)=>{
@@ -65,6 +66,8 @@ app.post('/api/tasks', async (req, res, next)=>{
     message: "bad request"
   }) }
 });
+app.delete('api/users/:userId', Users.delete);
+
 app.get('/api/tasks', Tasks.list); // API route for user to get all tasks in the database
 app.put('/api/tasks/:taskId', Tasks.modify); // API route for user to edit a task
 app.delete('/api/tasks/:taskId', Tasks.delete); // API route for user to delete a book
