@@ -7,6 +7,7 @@ import { tsConstructSignatureDeclaration } from '@babel/types';
 import redis from "redis";
 import client from "../redis";
 import { confirmEmail } from '../redis'
+import { CustomConsole } from '@jest/console';
 
 var express = require('express');
 var router = express.Router();
