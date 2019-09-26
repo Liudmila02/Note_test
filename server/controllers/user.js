@@ -31,23 +31,6 @@ import {sendEmail} from "../redis"
             }
           }
         
-        static delete(req, res) {
-          return User
-            .findById(req.params.userId)
-            .then(user => {
-              if(!user) {
-                return res.status(400).send({
-                message: 'User Not Found',
-                });
-              }
-              return user
-                .destroy()
-                .then(() => res.status(200).send({
-                  message: 'Task successfully deleted'
-                }))
-                .catch(error => res.status(400).send(error));
-            })
-            .catch(error => res.status(400).send(error))
-        }
+        
       }
         export default Users;

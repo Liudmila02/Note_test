@@ -66,7 +66,12 @@ app.post('/api/tasks', async (req, res, next)=>{
     message: "bad request"
   }) }
 });
-app.delete('api/users/:userId', Users.delete);
+app.get('/signout', function(req, res) {
+  req.signout();
+  req.session.destroy();
+  res.redirect('/');
+  });
+
 
 app.get('/api/tasks', Tasks.list); // API route for user to get all tasks in the database
 app.put('/api/tasks/:taskId', Tasks.modify); // API route for user to edit a task
