@@ -57,7 +57,8 @@ app.post('/api/users', async (req, res, next)=>{
       user
       })
     });
-}); // API route for user to signup
+}); 
+
 app.post('/api/tasks', async (req, res, next)=>{
   const validationTasks = validateTasksForm(req.body)
   if (Object.keys(validationTasks).length) return res.status(500).json(validationTasks)
@@ -66,16 +67,16 @@ app.post('/api/tasks', async (req, res, next)=>{
     message: "bad request"
   }) }
 });
-app.get('/signout', function(req, res) {
-  req.signout();
-  req.session.destroy();
-  res.redirect('/');
+app.get('/signout', async (req, res)=> {
+  req.session.destroy(function (err) {
+    req.user = null;
+    return res.status(200).json({message:'sucsess'})
+
   });
-
-
-app.get('/api/tasks', Tasks.list); // API route for user to get all tasks in the database
-app.put('/api/tasks/:taskId', Tasks.modify); // API route for user to edit a task
-app.delete('/api/tasks/:taskId', Tasks.delete); // API route for user to delete a book
+});
+app.get('/tasks', Tasks.list); 
+app.put('/api/tasks/:taskId', Tasks.modify); 
+app.delete('/api/tasks/:taskId', Tasks.delete);
 
 app.get('/auth', (req, res) => {
   if (!req.isAuthenticated())

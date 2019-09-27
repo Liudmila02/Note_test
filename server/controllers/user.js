@@ -31,6 +31,5 @@ import {sendEmail} from "../redis"
             }
           }
         
-        
       }
         export default Users;

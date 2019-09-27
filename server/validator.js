@@ -15,9 +15,7 @@ export const validateTasksForm = args => {
   var errors = {}
   if (!args.title) errors.title =  "this field cann't be blank";
   if (!args.description) errors.description =  "this field cann't be blank";
-  if (!args.priority) errors.priority =  "choose a priority";
   if (!args.due_date) errors.due_date =  "choose a due date";
   
-
  return errors
 }

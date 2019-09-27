@@ -9,7 +9,6 @@ module.exports = (sequelize, DataTypes) => {
     userId: DataTypes.INTEGER,
   }, {});
   Task.associate = function(models) {
-    // associations can be defined here
   };
   return Task;
 };
@@ -60,7 +59,6 @@ export default (sequelize, DataTypes) => {
     }
   }, {});
   Task.associate = (models) => {
-    // associations can be defined here
     Task.belongsTo(models.User, {
       foreignKey: 'userId',
       onDelete: 'CASCADE'
