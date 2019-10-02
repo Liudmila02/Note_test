@@ -208,15 +208,18 @@ describe('app/confirm_email', () => {
   
   describe('Modify a task', () => {
     it('should modify a task', async () => {
-      await supertest(app).put('/api/tasks/:taskId')
+      await supertest(app).put('/api/tasks/1')
       .expect(200).put, 'task modified'
       });
     })
   
   describe('Delete a task', () => {
     it('should delete a task', async () => {
-      await supertest(app).delete('/api/tasks/:taskId')
-        .expect(200).delete, 'task deleted'
+      await supertest(app).delete('/api/tasks/1')
+      .then(response => {
+        expect(response.statusCode).toBe(200);
+      })
+        // .expect(200).delete, 'task deleted'
     });
   })
   

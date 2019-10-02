@@ -53,23 +53,22 @@ class Tasks {
         })
         .catch(error => res.status(400).send(error));
     }
-    static delete(req, res) {
-      return Task
-        .findById(req.params.taskId)
-        .then(task => {
-          if(!task) {
-            return res.status(400).send({
-            message: 'Task Not Found',
-            });
-          }
-          return task
-            .destroy()
-            .then(() => res.status(200).send({
-              message: 'Task successfully deleted'
-            }))
-            .catch(error => res.status(400).send(error));
+    static async delete(req, res) {
+      try{ 
+        await Task
+        .destroy({
+          where:{id: req.params.taskId}
         })
-        .catch(error => res.status(400).send(error))
+        res.status(200).send({
+          message: 'Task successfully deleted'
+        })
+      }catch(err) {
+        console.log(err)
+        return res.status(400).send({
+        message: 'Task Not Found',
+        });
+
+      }    
     }
 }
 
