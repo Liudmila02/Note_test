@@ -58,7 +58,7 @@ app.post('/api/users', async (req, res, next)=>{
       })
     });
 }); 
-
+//create
 app.post('/api/tasks', async (req, res, next)=>{
   const validationTasks = validateTasksForm(req.body)
   if (Object.keys(validationTasks).length) return res.status(500).json(validationTasks)
@@ -67,6 +67,15 @@ app.post('/api/tasks', async (req, res, next)=>{
     message: "bad request"
   }) }
 });
+//index
+app.get('/api/tasks', Tasks.list); 
+//update
+app.put('/api/tasks/:taskId', Tasks.modify); 
+//destroy
+app.delete('/api/tasks/:taskId', Tasks.delete);
+//show
+app.get('/api/tasks/:taskId', Tasks.show); 
+
 app.get('/signout', async (req, res)=> {
   req.session.destroy(function (err) {
     req.user = null;
@@ -74,10 +83,6 @@ app.get('/signout', async (req, res)=> {
 
   });
 });
-app.get('/tasks', Tasks.list); 
-app.put('/api/tasks/:taskId', Tasks.modify); 
-app.delete('/api/tasks/:taskId', Tasks.delete);
-
 app.get('/auth', (req, res) => {
   if (!req.isAuthenticated())
   return res.status(401).json({message: "not authenticated"})
