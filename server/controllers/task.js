@@ -99,8 +99,8 @@ class Tasks {
       try{ 
         const newTask= await Task
         .findOne({where:{id: req.params.taskId}})
-        res.status(200).send({
-         data: newTask
+        res.status(200).json({
+         task: newTask
         })
       }catch(err) {
         console.log(err)
