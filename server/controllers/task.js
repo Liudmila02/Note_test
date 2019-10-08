@@ -31,7 +31,7 @@ class Tasks {
       const task = await Task.findOne({where: {id: req.params.taskId }})
         console.log(req.params.taskId)
         if (!task) throw new Error()
-      .update({
+        const updatedTask = task.update({
         title: title || task.title,
         description: description || task.description,
         priority: priority || task.priority,
