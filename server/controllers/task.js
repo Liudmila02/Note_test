@@ -27,17 +27,23 @@ class Tasks {
     }
   static async modify(req, res) {
     const { title, description, priority, due_date, completed } = req.body
+    console.log(req.body);
+
     try{ 
       const task = await Task.findOne({where: {id: req.params.taskId }})
         console.log(req.params.taskId)
         if (!task) throw new Error()
         const updatedTask = task.update({
-        title: title || task.title,
-        description: description || task.description,
-        priority: priority || task.priority,
-        due_date: due_date || task.due_date,
-        completed: completed || task.completed
-      })
+          title: title || task.title,
+          description: description || task.description,
+          priority: priority || task.priority,
+          due_date: due_date || task.due_date,
+          completed: typeof completed == 'boolean' ? completed : task.completed
+        })
+        
+        console.log('completed', completed);
+        console.log(updatedTask);
+        
       res.status(200).send({
         message: 'Task successfully update',
         data: updatedTask
