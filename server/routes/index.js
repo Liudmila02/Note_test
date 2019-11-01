@@ -61,7 +61,7 @@ app.post('/api/users', async (req, res, next)=>{
 //create
 app.post('/api/tasks', async (req, res, next)=>{
   const validationTasks = validateTasksForm(req.body)
-  if (Object.keys(validationTasks).length) return res.status(500).json(validationTasks)
+  if (Object.keys(validationTasks).length) return res.status(200).json(validationTasks)
   const task = await Tasks.create(req,res)
   if (!task) { return res.status(401).json({
     message: "bad request"
@@ -72,17 +72,17 @@ app.get('/api/tasks', Tasks.list);
 //update
 app.put('/api/tasks/:taskId', Tasks.modify); 
 //destroy
-app.delete('/api/tasks/:taskId', Tasks.delete);
+app.delete('/api/tasks/:taskIds', Tasks.delete);
 //show
 app.get('/api/tasks/:taskId', Tasks.show); 
 
 app.get('/signout', async (req, res)=> {
   req.session.destroy(function (err) {
     req.user = null;
-    return res.status(200).json({message:'sucsess'})
-
+    return res.status(200).json({message:'user successfully signed out with account'})
   });
 });
+
 app.get('/auth', (req, res) => {
   if (!req.isAuthenticated())
   return res.status(401).json({message: "not authenticated"})

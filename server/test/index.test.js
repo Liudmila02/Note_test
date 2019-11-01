@@ -61,7 +61,6 @@ describe('not correct task',() => {
     expect( JSON.stringify(response.body)).toBe(JSON.stringify({
       title: "this field cann't be blank",
       description: "this field cann't be blank",
-      priority: "choose a priority",
       due_date: "choose a due date",
     }));
   });
@@ -208,19 +207,78 @@ describe('app/confirm_email', () => {
   
   describe('Modify a task', () => {
     it('should modify a task', async () => {
-      await supertest(app).put('/api/tasks/1')
-      .expect(200).put, 'task modified'
+    await supertest(app)
+      .put('/api/tasks/1')
+      .set('content-type', 'application/json')
+      .send({
+        title: 'task number one',
+        description: 'short description',
+        priority: 2,
+        due_date: '01/01/2020',
+        completed: false,
+      }).then(response => {
+      expect(response.statusCode).toBe(200);
+      expect( JSON.stringify(response.body)).toBe(JSON.stringify({
+        title: 'task number one',
+        description: 'short description',
+        priority: 2,
+        due_date: '01/01/2020',
+        completed: false,
+      }));
       });
     })
-  
+  })
   describe('Delete a task', () => {
     it('should delete a task', async () => {
-      await supertest(app).delete('/api/tasks/1')
-      .then(response => {
+      await db.Task.destroy({ where: {}, force: true });
+          const user = await db.User.findOne({})
+          let cookie
+          await supertest(app)
+              .post('/api/login')
+              .set('content-type', 'application/json')
+              .send({
+                email: user.email,
+                password: user.password,
+              })
+              .then(async response => {
+                cookie = response.headers['set-cookie'].pop().split(';')[0];
+              });
+      await supertest(app)
+        .delete('/api/tasks/1')
+        .set('Cookie', cookie)
+        .then(response => {
+
         expect(response.statusCode).toBe(200);
       })
-        // .expect(200).delete, 'task deleted'
     });
+
+    describe('Show a task', () => {
+      it('should show a task', async () => {
+        await db.Task.destroy({ where: {}, force: true });
+          const user = await db.User.findOne({})
+          let cookie
+          await supertest(app)
+              .post('/api/login')
+              .set('content-type', 'application/json')
+              .send({
+                email: user.email,
+                password: user.password,
+              })
+              .then(async response => {
+                cookie = response.headers['set-cookie'].pop().split(';')[0];
+              });
+        await supertest(app)
+          .get('/api/tasks/1')
+          .set('Cookie', cookie)
+          .send({
+            title: 'task number one',
+            description: 'short description',
+            priority: 2,
+            due_date: '01/01/2020',
+            completed: false,
+          }).then(response => {
+          expect(response.statusCode).toBe(200);
+        })
+      })
   })
-  
- 
+  });

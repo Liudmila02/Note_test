@@ -85,10 +85,11 @@ class Tasks {
 
 
     static async delete(req, res) {
+      console.log(req.params.taskIds)
       try{ 
         await Task
         .destroy({
-          where:{id: req.params.taskId}
+          where:{id: req.params.taskIds.split(',')}
         })
         res.status(200).send({
           message: 'Task successfully deleted'
@@ -98,9 +99,9 @@ class Tasks {
         return res.status(400).send({
         message: 'Task Not Found',
         });
-
       }    
     }
+   
     static async show(req, res) {
       try{ 
         const newTask= await Task
