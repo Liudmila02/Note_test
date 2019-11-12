@@ -13,8 +13,7 @@ var express = require('express');
 var router = express.Router();
   
 export default (app) => {
-app.get('/api', (req, res) => res.status(200).send({
-        message: 'Welcome to the bookStore API!',}));
+app.get('/api', (req, res) => res.status(200).send({message: 'Welcome to the bookStore API!',}));
 
 app.post('/api/login', (req, res, next)=>{
   passport.authenticate('local', function(err, user, info) {
@@ -29,7 +28,7 @@ app.post('/api/login', (req, res, next)=>{
         return res.status(200).json({
           user
         })
-        });
+      });
   })(req, res, next);
 })
 
@@ -42,9 +41,8 @@ app.get('/confirm_email', async (req, res, next) => {
     res.status(500).json({message: "link is broken"});
 })
 
-
 app.post('/api/users', async (req, res, next)=>{
-   const validationResult = validateRegisterForm(req.body)
+  const validationResult = validateRegisterForm(req.body)
   console.log(validationResult)
   if (Object.keys(validationResult).length) return res.status(500).json(validationResult)
   const user = await Users.signUp(req)
@@ -57,24 +55,29 @@ app.post('/api/users', async (req, res, next)=>{
       user
       })
     });
-}); 
+});
+
 //create
-app.post('/api/tasks', async (req, res, next)=>{
+app.post('/api/tasks', isAuthenticated, async (req, res, next)=>{
   const validationTasks = validateTasksForm(req.body)
   if (Object.keys(validationTasks).length) return res.status(200).json(validationTasks)
-  const task = await Tasks.create(req,res)
+    const task = await Tasks.create(req,res)
   if (!task) { return res.status(401).json({
     message: "bad request"
   }) }
 });
+
 //index
-app.get('/api/tasks', Tasks.list); 
+app.get('/api/tasks', isAuthenticated, Tasks.list); 
+
 //update
-app.put('/api/tasks/:taskId', Tasks.modify); 
+app.put('/api/tasks/:taskId', isAuthenticated, Tasks.modify); 
+
 //destroy
-app.delete('/api/tasks/:taskIds', Tasks.delete);
+app.delete('/api/tasks/:taskIds', isAuthenticated, Tasks.delete);
+
 //show
-app.get('/api/tasks/:taskId', Tasks.show); 
+app.get('/api/tasks/:taskId', isAuthenticated, Tasks.show); 
 
 app.get('/signout', async (req, res)=> {
   req.session.destroy(function (err) {
@@ -82,11 +85,15 @@ app.get('/signout', async (req, res)=> {
     return res.status(200).json({message:'user successfully signed out with account'})
   });
 });
+}
 
-app.get('/auth', (req, res) => {
-  if (!req.isAuthenticated())
-  return res.status(401).json({message: "not authenticated"})
-  else return res.status(200).json(req.user)
-})
+function isAuthenticated(req, res, next) {
+  console.log(req.cookies)
+  if (req.isAuthenticated()) {
+    return next();
+  }
+  return res.status(401).json({
+    error: "User not authenticated"
+  });
 }
 
