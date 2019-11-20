@@ -12,8 +12,7 @@ import session from 'express-session';
 import cors from 'cors';
 
 const app = express()
-
-
+// var passportLinkedIn = require('./server/auth/linkedIn');
 app.use(
   cors({
     origin(origin, cb) {
@@ -44,6 +43,13 @@ const sessionConfig = {
     },
   };
 app.use(session(sessionConfig));
+//
+app.use(session({
+  secret: 'keyboard cat',
+  resave: true,
+  saveUninitialized: true
+}));
+//
 
 app.use(passport.initialize());
 app.use(passport.session());
@@ -57,6 +63,9 @@ routes(app);
 app.get('*', (req, res) => res.status(200).send({
   message: 'Welcome to the .',
 }));
+// app.get('*', function(req, res) {
+//   res.redirect('/auth/linkedin' + req.originalUrl);
+// });
 
 
 export default app;

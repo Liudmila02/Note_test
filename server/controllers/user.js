@@ -31,7 +31,8 @@ class Users {
       console.log(err)
       return null
     }
-  }       
+  }  
+  
 }
 
 export default Users;

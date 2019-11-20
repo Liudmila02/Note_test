@@ -8,9 +8,11 @@ import redis from "redis";
 import client from "../redis";
 import { confirmEmail } from '../redis'
 import { CustomConsole } from '@jest/console';
+import db from '../models/index'
 
 var express = require('express');
 var router = express.Router();
+var passportLinkedIn = require('../auth/linkedIn');
   
 export default (app) => {
 app.get('/api', (req, res) => res.status(200).send({message: 'Welcome to the bookStore API!',}));
@@ -31,6 +33,68 @@ app.post('/api/login', (req, res, next)=>{
       });
   })(req, res, next);
 })
+//linkedin
+app.get('/auth/linkedin',(req, res, next) => {
+  passport.authenticate('linkedin')(req, res, next)
+ });
+
+ app.get('/auth/linkedin/callback', async (req, res, next) => {
+  passport.authenticate('linkedin', (err, user, info) => {
+    const message =
+      info && info.message
+        ? info.message
+        : "An error occurred. Please try again later.";
+    if (err) {
+      return res.status(500).json({ message });
+    }
+    if (!user) {
+      return res.status(401).json({ message });
+    }
+    return req.login(user, (innerErr) => {
+      if (innerErr) {
+        console.log(innerErr);
+        return res.status(401).json({ message });
+      }
+      return res.redirect('http://localhost:3000/');
+    });
+  })(req, res, next);
+ });
+//github
+ app.get('/auth/github',(req, res, next) => {
+  passport.authenticate('github')(req, res, next)
+ });
+
+ app.get('/auth/github/callback', async (req, res, next) => {
+  passport.authenticate('github', (err, user, info) => {
+    const message =
+      info && info.message
+        ? info.message
+        : "An error occurred. Please try again later.";
+    if (err) {
+      return res.status(500).json({ message });
+    }
+    if (!user) {
+      return res.status(401).json({ message });
+    }
+    return req.login(user, (innerErr) => {
+      if (innerErr) {
+        console.log(innerErr);
+        return res.status(401).json({ message });
+      }
+      return res.redirect('http://localhost:3000/');
+    });
+  })(req, res, next);
+ });
+
+//  app.get('/auth/github',
+//   passport.authenticate('github', { scope: [ 'user:email' ] }));
+
+// app.get('/auth/github/callback', 
+//   passport.authenticate('github', { failureRedirect: '/login' }),
+//   function(req, res) {
+//     // Successful authentication, redirect home.
+//     res.redirect('http://localhost:3000/');
+//   });
 
 app.get('/confirm_email', async (req, res, next) => {
   const result = await confirmEmail(req)
@@ -96,4 +160,5 @@ function isAuthenticated(req, res, next) {
     error: "User not authenticated"
   });
 }
+
 
