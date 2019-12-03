@@ -11,6 +11,7 @@ import session from 'express-session';
 
 import cors from 'cors';
 
+// var flash = require('express-flash');
 const app = express()
 // var passportLinkedIn = require('./server/auth/linkedIn');
 app.use(
@@ -63,10 +64,8 @@ routes(app);
 app.get('*', (req, res) => res.status(200).send({
   message: 'Welcome to the .',
 }));
-// app.get('*', function(req, res) {
-//   res.redirect('/auth/linkedin' + req.originalUrl);
-// });
 
+// app.use(flash());
 
 export default app;
 module.exports = app;

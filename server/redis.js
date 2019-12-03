@@ -47,6 +47,37 @@ export const sendEmail = args =>{
     }
   });
 }
+export const sendEmailPassword = args =>{
+  const uuidv4 = require('uuid/v4');
+  const token = uuidv4()+uuidv4();
+    client.set(token, args.email, redis.print);
+    client.expire(token, 99999);
+
+  var nodemailer = require('nodemailer');
+
+  var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'test.email.for.myapp@gmail.com',
+      pass: 'nodejs2020'
+    }
+  });
+  
+  var mailOptions = {
+    from: 'test.email.for.myapp@gmail.com',
+    to: args.email,
+    subject: 'Reset password',
+    text: `<a href="localhost:3000/reset_password?token=${token}">Click</a>`
+  };
+    console.log(token)
+  transporter.sendMail(mailOptions, function(error, info){
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ');
+    }
+  });
+}
 
 export const confirmEmail = async req => {
   const token = req.query.token
@@ -59,6 +90,16 @@ export const confirmEmail = async req => {
   return true
 }
 
+// export const confirmPassword = async req => {
+//   const token = req.query.token
+//   const email = await client.getAsync(token)
+//   if (!email) return false
+//   const user = await db.User.findOne({where: {email}})
+//   if (!user) return false
+//   await user.update({password: password}) 
+//   client.del(token)
+//   return true
+// }
 client.on('connect', () => {
   require('bluebird').promisifyAll(client)
 })

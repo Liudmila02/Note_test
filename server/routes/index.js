@@ -9,10 +9,12 @@ import client from "../redis";
 import { confirmEmail } from '../redis'
 import { CustomConsole } from '@jest/console';
 import db from '../models/index'
+import { confirmEmailPassword } from '../redis'
 
 var express = require('express');
 var router = express.Router();
 var passportLinkedIn = require('../auth/linkedIn');
+
   
 export default (app) => {
 app.get('/api', (req, res) => res.status(200).send({message: 'Welcome to the bookStore API!',}));
@@ -86,16 +88,6 @@ app.get('/auth/linkedin',(req, res, next) => {
   })(req, res, next);
  });
 
-//  app.get('/auth/github',
-//   passport.authenticate('github', { scope: [ 'user:email' ] }));
-
-// app.get('/auth/github/callback', 
-//   passport.authenticate('github', { failureRedirect: '/login' }),
-//   function(req, res) {
-//     // Successful authentication, redirect home.
-//     res.redirect('http://localhost:3000/');
-//   });
-
 app.get('/confirm_email', async (req, res, next) => {
   const result = await confirmEmail(req)
   console.log(result)
@@ -121,6 +113,10 @@ app.post('/api/users', async (req, res, next)=>{
     });
 });
 
+app.get('/api/users/:userId', isAuthenticated, Users.show);
+
+app.put('/api/users/:userId', isAuthenticated, Users.modify);
+
 //create
 app.post('/api/tasks', isAuthenticated, async (req, res, next)=>{
   const validationTasks = validateTasksForm(req.body)
@@ -130,7 +126,6 @@ app.post('/api/tasks', isAuthenticated, async (req, res, next)=>{
     message: "bad request"
   }) }
 });
-
 //index
 app.get('/api/tasks', isAuthenticated, Tasks.list); 
 
@@ -149,7 +144,29 @@ app.get('/signout', async (req, res)=> {
     return res.status(200).json({message:'user successfully signed out with account'})
   });
 });
+// forgot password
+app.get('/forgot', function(req, res) {
+  res.render('forgot', {
+    user: req.user
+  });
+});
+
+// app.get('/forgot/reset', async (req, res, next) => {
+//   const result = await confirmEmail(req)
+//   console.log(result)
+//   if (result)
+//     res.status(200).json({message: "Welcome to the ."});
+//   else
+//     res.status(500).json({message: "link is broken"});
+// })
+
+//знаходить емейл, порывнюэ i вiдправляэ лист
+app.post('/forgot', Users.resetPassword);
+
+// обновляэ пароль
+app.post('/forgot/reset/:userId', Users.updatePassword);
 }
+
 
 function isAuthenticated(req, res, next) {
   console.log(req.cookies)
