@@ -145,11 +145,11 @@ app.get('/signout', async (req, res)=> {
   });
 });
 // forgot password
-app.get('/forgot', function(req, res) {
-  res.render('forgot', {
-    user: req.user
-  });
-});
+// app.get('/forgot', function(req, res) {
+//   res.render('forgot', {
+//     user: req.user
+//   });
+// });
 
 // app.get('/forgot/reset', async (req, res, next) => {
 //   const result = await confirmEmail(req)
@@ -164,7 +164,7 @@ app.get('/forgot', function(req, res) {
 app.post('/forgot', Users.resetPassword);
 
 // обновляэ пароль
-app.post('/forgot/reset/:userId', Users.updatePassword);
+app.put('/forgot/reset/:userId', Users.updatePassword);
 }
 
 

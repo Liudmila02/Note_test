@@ -34,13 +34,15 @@ class Users {
     }
   }  
 
-  static async resetPassword(req, token, done) {
+  static async resetPassword(req,res) {
     const email = req.body.email
       User.findOne({ where: {email: email},
       })
       .then(function (user) {
         if (!user) {
-          return throwFailed(res, 'No user found with that email address.')
+          return res.status(400).send({
+            message: 'User Not Found',
+            });
         }
         sendEmailPassword({ email: email })
       })
@@ -54,7 +56,6 @@ class Users {
   //   })
   // }
   static async updatePassword(req, res) {
-    
     const { password } = req.body
     // const email = req.body.email
     // User.findOne({ where: {email: email},
