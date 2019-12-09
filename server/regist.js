@@ -13,7 +13,6 @@ export async function login({email, password}){
   if (!user || !await bcrypt.compare(password, user.password_hash)) {
     throw new Error("Incorrect email or password");
   }
-
   return {
     id: user.id,
     first_name: user.first_name,

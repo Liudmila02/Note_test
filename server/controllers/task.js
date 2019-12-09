@@ -41,20 +41,18 @@ class Tasks {
           due_date: due_date || task.due_date,
           completed: typeof completed == 'boolean' ? completed : task.completed
         })
-        
         console.log('completed', completed);
         console.log(updatedTask);
-        
         res.status(200).send({
           message: 'Task successfully update',
           data: updatedTask
         })
-      }catch(err) {
-        console.log(err)
-        return res.status(400).send({
-        message: 'Task Not Update',
-        });         
-      } 
+    }catch(err) {
+      console.log(err)
+      return res.status(400).send({
+      message: 'Task Not Update',
+      });         
+    } 
   }   
   static async delete(req, res) {
     console.log(req.params.taskIds)

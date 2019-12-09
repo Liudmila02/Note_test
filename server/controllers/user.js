@@ -24,6 +24,7 @@ class Users {
         username,
         email,
         password,
+        
       }) 
       sendEmail({email: email
       })
@@ -34,37 +35,47 @@ class Users {
     }
   }  
 
+  // static async resetPassword(req,res) {
+  //   const  email = req.body.email
+  //     User.findOne({ where: {email: email},
+  //     })
+  //     .then(function (user) {
+  //       if (!user) {
+  //         return res.status(400).send({
+  //           message: 'User Not Found',
+  //           });
+  //       }
+  //       sendEmailPassword({ email: email })
+  //     })
+  // }
+
   static async resetPassword(req,res) {
-    const email = req.body.email
-      User.findOne({ where: {email: email},
+    const  { email } = req.body
+    try{
+      const user = await User.findOne({ where: {email: email}
       })
-      .then(function (user) {
-        if (!user) {
-          return res.status(400).send({
-            message: 'User Not Found',
-            });
-        }
+      if (!user) {
+        return res.status(400).send({
+          message: 'User Not Found',
+        });
+      }else {
         sendEmailPassword({ email: email })
-      })
+        console.log( user.id)
+        return res.status(200).json({ id: user.id }) 
+      }
+    }catch(err){
+      console.log(err)
+      return null 
+    }
   }
 
-  // static async updatePassword(req) {
-  //   const { password } = req.body
-  //   return await User
-  //   .update({
-  //     password,   
-  //   })
-  // }
   static async updatePassword(req, res) {
     const { password } = req.body
-    // const email = req.body.email
-    // User.findOne({ where: {email: email},
-    // })
     console.log(req.body);
     try{ 
       const user = await  User.findOne({ where: {id: req.params.userId},
       })
-        console.log(req.params.userId)
+        console.log("id===", req.params.userId)
         if (!user) throw new Error()
         const updatedPassword = user.update({
           password: password || user.password,
@@ -113,7 +124,6 @@ class Users {
           password: password || user.password,
         })
         console.log(updatedUser);
-        
         res.status(200).send({
           message: 'User successfully update',
           data: updatedUser
@@ -124,28 +134,6 @@ class Users {
         message: 'User Not Update',
         });         
       } 
-  }   
-
-  
-  //   try{ 
-  //     const user = await User.findOne({where: { userId: req.user.userId }})
-  //       console.log(req.userId)
-  //       if (!user) throw new Error()
-  //       const updatedUser = await User.update({
-  //         password: password || user.password,
-  //       })
-  //       console.log(updatedUser);
-  //       res.status(200).send({
-  //         message: 'Password successfully update',
-  //         data: updatedUser
-  //       })
-  //     }catch(err) {
-  //       console.log(err)
-  //       return res.status(400).send({
-  //       message: 'Password Not Update',
-  //       });         
-  //     } 
-     
-
+  }      
 }
 export default Users;

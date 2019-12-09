@@ -7,6 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     password: DataTypes.STRING,
     confirmed: DataTypes.BOOLEAN,
+    avatar:  DataTypes.STRING,
   }, {});
   User.associate = function(models) {
     // associations can be defined here
@@ -79,7 +80,12 @@ export default (sequelize, DataTypes) => {
           }
         },
       },
-    }
+    },
+    avatar: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      defaultValue: false,
+    }, 
   }, {});
   User.associate = (models) => {
     // associations can be defined here

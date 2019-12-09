@@ -15,7 +15,6 @@ var express = require('express');
 var router = express.Router();
 var passportLinkedIn = require('../auth/linkedIn');
 
-  
 export default (app) => {
 app.get('/api', (req, res) => res.status(200).send({message: 'Welcome to the bookStore API!',}));
 
@@ -145,28 +144,13 @@ app.get('/signout', async (req, res)=> {
   });
 });
 // forgot password
-// app.get('/forgot', function(req, res) {
-//   res.render('forgot', {
-//     user: req.user
-//   });
-// });
-
-// app.get('/forgot/reset', async (req, res, next) => {
-//   const result = await confirmEmail(req)
-//   console.log(result)
-//   if (result)
-//     res.status(200).json({message: "Welcome to the ."});
-//   else
-//     res.status(500).json({message: "link is broken"});
-// })
-
 //знаходить емейл, порывнюэ i вiдправляэ лист
 app.post('/forgot', Users.resetPassword);
 
 // обновляэ пароль
-app.put('/forgot/reset/:userId', Users.updatePassword);
-}
+app.put('/reset/:userId', Users.updatePassword);
 
+}
 
 function isAuthenticated(req, res, next) {
   console.log(req.cookies)
